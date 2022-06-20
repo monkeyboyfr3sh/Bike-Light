@@ -1,0 +1,29 @@
+{
+  "C_Cpp.intelliSenseEngine": "Tag Parser",
+  "idf.portWin": "COM4",
+  "idf.flashType": "UART",
+  "idf.adapterTargetName": "esp32",
+  "files.associations": {
+    "*.txt": "cmake",
+    "netdb.h": "c",
+    "sys.h": "c",
+    "*.inc": "c",
+    "freertos.h": "c",
+    "led_thread.h": "c",
+    "tcp_thread.h": "c",
+    "udp_thread.h": "c",
+    "*.ipp": "c",
+    "led_strip.h": "c",
+    "esp_netif.h": "c",
+    "err.h": "c",
+    "nvs_flash.h": "c",
+    "rmt.h": "c",
+    "cerrno": "c",
+    "gpio.h": "c",
+    "utils.h": "c",
+    "ratio": "c",
+    "stdbool.h": "c",
+    "chrono": "c",
+    "sockets.h": "c"
+  }
+}
