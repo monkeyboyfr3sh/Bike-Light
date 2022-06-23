@@ -72,3 +72,5 @@ C:/Users/david/Documents/GitHub/Bike-Light/tcp_server/build/esp-idf/wifi_provisi
 C:/Users/david/Documents/GitHub/Bike-Light/tcp_server/build/esp-idf/main/libmain.a
 C:/Users/david/Documents/GitHub/Bike-Light/tcp_server/build/esp-idf/protocol_examples_common/libprotocol_examples_common.a
 C:/Users/david/Documents/GitHub/Bike-Light/tcp_server/build/esp-idf/led_strip/libled_strip.a
+C:/Users/david/Documents/GitHub/Bike-Light/tcp_server/build/esp-idf/Frame_Thread/libFrame_Thread.a
+C:/Users/david/Documents/GitHub/Bike-Light/tcp_server/build/esp-idf/TCP_OTA/libTCP_OTA.a

@@ -20,7 +20,9 @@
 #include "led_strip.h"
 
 #include "stdbool.h"
-#include "inc/Frame_Thread.h"
+
+#include "Frame_Thread.h"
+#include "OTA_Thread.h"
 
 static const char *TAG = "bk-lite";
 
@@ -30,6 +32,7 @@ void app_main(void)
     
     ESP_LOGI(TAG,"Forking led task");
     xTaskCreate(frame_buff_task, "led_task", 8192, (void*)"lt_1", 5, NULL);
+    xTaskCreate(OTA_task, "ota_task", 8192, (void*)"ota_1", 5, NULL);
     
     ESP_LOGI(TAG,"************** Main thread exit ***************");
 }

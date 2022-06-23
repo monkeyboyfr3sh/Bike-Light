@@ -2,12 +2,12 @@
     "configurations": [
         {
             "name": "ESP-IDF",
-            "compilerPath": "C:\\Users\\monke\\.espressif\\tools\\xtensa-esp32-elf\\esp-2021r2-patch3-8.4.0\\xtensa-esp32-elf\\bin\\xtensa-esp32-elf-gcc.exe",
+            "compilerPath": "C:\\Users\\david\\.espressif\\tools\\xtensa-esp32-elf\\esp-2021r2-patch3-8.4.0\\xtensa-esp32-elf\\bin\\xtensa-esp32-elf-gcc.exe",
             "cStandard": "c11",
             "cppStandard": "c++17",
             "includePath": [
-                "${config:idf.espIdfPath}/components/**",
                 "${config:idf.espIdfPathWin}/components/**",
+                "${config:idf.espIdfPathWin}/examples/common_components/protocol_examples_common/include/**",
                 "${config:idf.espAdfPath}/components/**",
                 "${config:idf.espAdfPathWin}/components/**",
                 "${config:idf.espAdfPathWin}/examples/common_components/protocol_examples_common",
@@ -15,8 +15,8 @@
             ],
             "browse": {
                 "path": [
-                    "${config:idf.espIdfPath}/components",
                     "${config:idf.espIdfPathWin}/components",
+                    "${config:idf.espIdfPathWin}/examples/common_components/protocol_examples_common/include/**",
                     "${config:idf.espAdfPath}/components/**",
                     "${config:idf.espAdfPathWin}/components/**",
                     "${workspaceFolder}"

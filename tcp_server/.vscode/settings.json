@@ -24,6 +24,12 @@
     "ratio": "c",
     "stdbool.h": "c",
     "chrono": "c",
-    "sockets.h": "c"
+    "sockets.h": "c",
+    "esp_system.h": "c",
+    "esp_wifi.h": "c",
+    "protocol_examples_common.h": "c",
+    "frame_thread.h": "c",
+    "esp_event.h": "c",
+    "ota_thread.h": "c"
   }
 }

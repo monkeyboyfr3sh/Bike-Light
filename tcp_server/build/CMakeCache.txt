@@ -14,6 +14,12 @@
 # EXTERNAL cache entries
 ########################
 
+//No help, variable specified on the command line.
+CCACHE_ENABLE:UNINITIALIZED=1
+
+//Path to a program.
+CCACHE_FOUND:FILEPATH=C:/Users/david/.espressif/tools/ccache/4.3/ccache-4.3-windows-64/ccache.exe
+
 //Path to a program.
 CMAKE_ADDR2LINE:FILEPATH=C:/Users/david/.espressif/tools/xtensa-esp32-elf/esp-2021r2-patch3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-addr2line.exe
 
@@ -239,7 +245,7 @@ ENABLE_ZLIB_SUPPORT:BOOL=OFF
 ESP_PLATFORM:UNINITIALIZED=1
 
 //Git command line client
-GIT_EXECUTABLE:FILEPATH=GIT_EXECUTABLE-NOTFOUND
+GIT_EXECUTABLE:FILEPATH=C:/Users/david/.espressif/tools/idf-git/2.30.1/cmd/git.exe
 
 //IDF Build Target
 IDF_TARGET:STRING=esp32
@@ -273,6 +279,12 @@ USE_SHARED_MBEDTLS_LIBRARY:BOOL=OFF
 
 //Build mbed TLS static library.
 USE_STATIC_MBEDTLS_LIBRARY:BOOL=ON
+
+//Dependencies for the target
+__idf_Frame_Thread_LIB_DEPENDS:STATIC=general;__idf_cxx;general;__idf_newlib;general;__idf_freertos;general;__idf_esp_hw_support;general;__idf_heap;general;__idf_log;general;__idf_lwip;general;__idf_soc;general;__idf_hal;general;__idf_esp_rom;general;__idf_esp_common;general;__idf_esp_system;
+
+//Dependencies for the target
+__idf_TCP_OTA_LIB_DEPENDS:STATIC=general;__idf_cxx;general;__idf_newlib;general;__idf_freertos;general;__idf_esp_hw_support;general;__idf_heap;general;__idf_log;general;__idf_lwip;general;__idf_soc;general;__idf_hal;general;__idf_esp_rom;general;__idf_esp_common;general;__idf_esp_system;
 
 //Dependencies for the target
 __idf_app_trace_LIB_DEPENDS:STATIC=general;__idf_cxx;general;__idf_newlib;general;__idf_freertos;general;__idf_esp_hw_support;general;__idf_heap;general;__idf_log;general;__idf_lwip;general;__idf_soc;general;__idf_hal;general;__idf_esp_rom;general;__idf_esp_common;general;__idf_esp_system;
@@ -635,7 +647,7 @@ CMAKE_MODULE_LINKER_FLAGS_RELWITHDEBINFO-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_NM
 CMAKE_NM-ADVANCED:INTERNAL=1
 //number of local generators
-CMAKE_NUMBER_OF_MAKEFILES:INTERNAL=96
+CMAKE_NUMBER_OF_MAKEFILES:INTERNAL=98
 //ADVANCED property for variable: CMAKE_OBJCOPY
 CMAKE_OBJCOPY-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_OBJDUMP
@@ -678,6 +690,8 @@ CMAKE_STRIP-ADVANCED:INTERNAL=1
 CMAKE_VERBOSE_MAKEFILE-ADVANCED:INTERNAL=1
 //Test C_COMPILER_SUPPORTS_WFORMAT_SIGNEDNESS
 C_COMPILER_SUPPORTS_WFORMAT_SIGNEDNESS:INTERNAL=1
+//Details about finding Git
+FIND_PACKAGE_MESSAGE_DETAILS_Git:INTERNAL=[C:/Users/david/.espressif/tools/idf-git/2.30.1/cmd/git.exe][v2.30.1.windows.1()]
 //Details about finding Python3
 FIND_PACKAGE_MESSAGE_DETAILS_Python3:INTERNAL=[C:/Users/david/.espressif/python_env/idf4.4_py3.8_env/Scripts/python.exe][cfound components: Interpreter ][v3.8.7()]
 //ADVANCED property for variable: GIT_EXECUTABLE

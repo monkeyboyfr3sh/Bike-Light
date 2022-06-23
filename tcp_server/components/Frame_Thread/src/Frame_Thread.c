@@ -1,4 +1,4 @@
-#include "inc/Frame_Thread.h"
+#include "Frame_Thread.h"
 
 #include <string.h>
 #include <sys/param.h>
@@ -21,7 +21,7 @@
 #include "driver/rmt.h"
 
 
-#include "inc/utils.h"
+#include "utils.h"
 
 #include "stdbool.h"
 

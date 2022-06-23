@@ -230,7 +230,7 @@ CMAKE_VERBOSE_MAKEFILE:BOOL=FALSE
 EXTRA_COMPONENT_DIRS:UNINITIALIZED=C:/Users/david/esp/esp-idf/components/bootloader
 
 //Git command line client
-GIT_EXECUTABLE:FILEPATH=GIT_EXECUTABLE-NOTFOUND
+GIT_EXECUTABLE:FILEPATH=C:/Users/david/.espressif/tools/idf-git/2.30.1/cmd/git.exe
 
 //No help, variable specified on the command line.
 IDF_PATH:UNINITIALIZED=C:/Users/david/esp/esp-idf
@@ -460,6 +460,8 @@ CMAKE_STATIC_LINKER_FLAGS_RELWITHDEBINFO-ADVANCED:INTERNAL=1
 CMAKE_STRIP-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_VERBOSE_MAKEFILE
 CMAKE_VERBOSE_MAKEFILE-ADVANCED:INTERNAL=1
+//Details about finding Git
+FIND_PACKAGE_MESSAGE_DETAILS_Git:INTERNAL=[C:/Users/david/.espressif/tools/idf-git/2.30.1/cmd/git.exe][v2.30.1.windows.1()]
 //ADVANCED property for variable: GIT_EXECUTABLE
 GIT_EXECUTABLE-ADVANCED:INTERNAL=1
 
