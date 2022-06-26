@@ -33,7 +33,7 @@ void app_main(void)
     
     ESP_LOGI(TAG,"Forking led task");
     xTaskCreate(frame_buff_task, "led_task", 8192, (void*)"lt_1", 5, NULL);
-    xTaskCreate(OTA_task, "ota_task", 8192, (void*)"ota_1", 5, NULL);
+    // xTaskCreate(OTA_task, "ota_task", 8192, (void*)"ota_1", 5, NULL);
     
     init_bk_io();
     turn_signal_t prev_signal_state = none_turn_t;
