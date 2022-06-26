@@ -11,10 +11,10 @@
 
 #define FRAME_TIME_MS                   (20)
 #define HUE_TIME_MS                     (25)
-#define PIX_TIME_MS                     (50)
+#define PIX_TIME_MS                     (20)
 #define RGB_OFFSET                      (30)
 
-#define DIV_FACTOR                      (2)
+#define DIV_FACTOR                      (15)
 
 typedef struct Frame{
     int num_row;

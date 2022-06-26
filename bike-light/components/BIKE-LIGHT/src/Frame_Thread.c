@@ -182,17 +182,67 @@ void frame_buff_task(void *pvParameters)
                     hue = start_rgb + ((i*NUM_COL)+j)*4;
                     led_strip_hsv2rgb(hue, 100, 100, &red, &green, &blue);
 
+                    red /= DIV_FACTOR;
+                    green /= DIV_FACTOR;
+                    blue /= DIV_FACTOR;
+
                     // Write RGB values to strip driver
                     int index = coord_to_index(i, j, frame_buff.index_map);
                     // ESP_LOGI(TAG,"map[%d][%d] = %d",i,j,index);
+
+                    // Horn animation
                     if(horn){        
-                        ESP_ERROR_CHECK((frame_buff.strip)->set_pixel(frame_buff.strip, index, (int)(red/DIV_FACTOR), (int)(green/DIV_FACTOR), (int)(blue/DIV_FACTOR)));
-                    } else {        
-                        if((back_num_pix<=i)&&(i<front_num_pix)){
-                            ESP_ERROR_CHECK((frame_buff.strip)->set_pixel(frame_buff.strip, index, (int)(red/DIV_FACTOR), (int)(green/DIV_FACTOR), (int)(blue/DIV_FACTOR)));
-                        } else {
+                        // ESP_ERROR_CHECK((frame_buff.strip)->set_pixel(frame_buff.strip, index, (int)(red), (int)(green), (int)(blue)));
+                        ESP_ERROR_CHECK((frame_buff.strip)->set_pixel(frame_buff.strip, index, (int)(0xFF/DIV_FACTOR), 0, 0));
+                    } 
+                    
+                    // Turn signal animation
+                    else if( (signal_state==left_turn_t) || (signal_state==right_turn_t) ){        
+
+                        // for(int k = (-NUM_COL)*box_width ; k<(NUM_COL)*box_width ; k+=2) {
+                        //     if( (back_num_pix+k<=i) && (i<front_num_pix+k) ) {
+                        //         // uint32_t color_code = 0xd6c01a;bea802
+                        //         // uint32_t color_code = 0xc14f00;
+                        //         uint32_t color_code = 0xc35000;
+                        //         // ESP_ERROR_CHECK((frame_buff.strip)->set_pixel(frame_buff.strip, index, (int)(red), (int)(green), (int)(blue)));
+                        //         ESP_ERROR_CHECK((frame_buff.strip)->set_pixel(frame_buff.strip, index, 
+                        //                 (int)(((color_code>>16)&0xFF)/DIV_FACTOR), 
+                        //                 (int)(((color_code>>8)&0xFF)/DIV_FACTOR), 
+                        //                 (int)(((color_code>>0)&0xFF)/DIV_FACTOR)));
+                        //     } else {
+                        //         ESP_ERROR_CHECK((frame_buff.strip)->set_pixel(frame_buff.strip, index, 0, 0, 0));
+                        //     }
+                        // }
+
+                        if( 
+                            (   ((back_num_pix-(8*box_width))<=i)   &&  (i<(front_num_pix-(8*box_width))))  ||
+                            (   ((back_num_pix-(6*box_width))<=i)   &&  (i<(front_num_pix-(6*box_width))))  ||
+                            (   ((back_num_pix-(4*box_width))<=i)   &&  (i<(front_num_pix-(4*box_width))))  ||
+                            (   ((back_num_pix-(2*box_width))<=i)   &&  (i<(front_num_pix-(2*box_width))))  ||
+                            (    (back_num_pix<=i)                  &&  (i<front_num_pix))                  ||
+                            (   ((back_num_pix+(2*box_width))<=i)   &&  (i<(front_num_pix+(2*box_width))))  ||
+                            (   ((back_num_pix+(4*box_width))<=i)   &&  (i<(front_num_pix+(4*box_width))))  ||
+                            (   ((back_num_pix+(6*box_width))<=i)   &&  (i<(front_num_pix+(6*box_width))))  ||
+                            (   ((back_num_pix+(8*box_width))<=i)   &&  (i<(front_num_pix+(8*box_width))))
+                        ) {
+                            // uint32_t color_code = 0xd6c01a;bea802
+                            // uint32_t color_code = 0xc14f00;
+                            uint32_t color_code = 0xc35000;
+                            // ESP_ERROR_CHECK((frame_buff.strip)->set_pixel(frame_buff.strip, index, (int)(red), (int)(green), (int)(blue)));
+                            ESP_ERROR_CHECK((frame_buff.strip)->set_pixel(frame_buff.strip, index, 
+                                    (int)(((color_code>>16)&0xFF)/DIV_FACTOR), 
+                                    (int)(((color_code>>8)&0xFF)/DIV_FACTOR), 
+                                    (int)(((color_code>>0)&0xFF)/DIV_FACTOR)));
+                        }
+
+                        else {
                             ESP_ERROR_CHECK((frame_buff.strip)->set_pixel(frame_buff.strip, index, 0, 0, 0));
                         }
+                    } 
+                    
+                    // Idle animation
+                    else {        
+                        ESP_ERROR_CHECK((frame_buff.strip)->set_pixel(frame_buff.strip, index, 0, 0, 0));
                     }
                 }
             }
@@ -204,7 +254,7 @@ void frame_buff_task(void *pvParameters)
         if((xTaskGetTickCount() - hue_timestamp) > pdMS_TO_TICKS(HUE_TIME_MS)){
             hue_timestamp = xTaskGetTickCount();
 
-            if(signal_state==left_turn_t){
+            if( (signal_state==left_turn_t) || (horn) ){
                 start_rgb += RGB_OFFSET*(-offset);
             } else if(signal_state==right_turn_t){
                 start_rgb -= RGB_OFFSET*(-offset);
@@ -218,22 +268,24 @@ void frame_buff_task(void *pvParameters)
             pix_timestamp = xTaskGetTickCount();
 
             if(signal_state==left_turn_t){
-                front_num_pix = (front_num_pix+1);
-                back_num_pix = (back_num_pix+1);
             
-                if(front_num_pix==NUM_ROW){
+                if(back_num_pix==NUM_ROW){
                     front_num_pix = box_width;
                     back_num_pix = 0;
+                } else {
+                    front_num_pix = (front_num_pix+1);
+                    back_num_pix = (back_num_pix+1);
                 }
             } 
             
             else if(signal_state==right_turn_t){
-                front_num_pix = (front_num_pix-1);
-                back_num_pix = (back_num_pix-1);
             
-                if(back_num_pix==0){
+                if(front_num_pix==0){
                     front_num_pix = NUM_ROW;
                     back_num_pix = NUM_ROW-box_width;
+                } else {
+                    front_num_pix = (front_num_pix-1);
+                    back_num_pix = (back_num_pix-1);
                 }
             }
 
