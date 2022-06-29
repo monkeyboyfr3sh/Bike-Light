@@ -9,12 +9,12 @@
 #define RMT_TX_CHANNEL RMT_CHANNEL_0
 #define CONFIG_EXAMPLE_STRIP_LED_NUMBER (256)
 
-#define FRAME_TIME_MS                   (20)
+#define FRAME_TIME_MS                   (25)
 #define HUE_TIME_MS                     (25)
-#define PIX_TIME_MS                     (20)
+#define PIX_TIME_MS                     (50)
 #define RGB_OFFSET                      (30)
-
-#define DIV_FACTOR                      (15)
+#define BLINK_BOX_MS                    (450)
+#define DIV_FACTOR                      (10)
 
 typedef struct Frame{
     int num_row;

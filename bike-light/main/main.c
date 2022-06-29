@@ -41,6 +41,9 @@ void app_main(void)
     
     bool prev_horn = false;
     bool horn = false;
+
+    bool prev_hazard = false;
+    bool hazard = false;
     while(1)
     {
         prev_signal_state = signal_state; 
@@ -55,6 +58,13 @@ void app_main(void)
         if(horn != prev_horn)
         {
             ESP_LOGI(TAG,"Horn state: %d",horn);
+        }
+
+        prev_hazard = hazard;
+        hazard = hazard_state();
+        if(hazard != prev_hazard)
+        {
+            ESP_LOGI(TAG,"Hazard state: %d",hazard);
         }
 
         vTaskDelay(1);

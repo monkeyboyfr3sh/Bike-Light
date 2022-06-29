@@ -135,9 +135,11 @@ void frame_buff_task(void *pvParameters)
     uint32_t frame_timestamp = xTaskGetTickCount();
     uint32_t hue_timestamp = xTaskGetTickCount();
     uint32_t pix_timestamp = xTaskGetTickCount();
+    uint32_t blink_timestamp = xTaskGetTickCount();
     
-    const int box_width = 4;
-    int front_num_pix = box_width;
+    const int scroll_box_width = 4;
+    const int blink_box_width = 8;
+    int front_num_pix = scroll_box_width;
     int back_num_pix = 0;
     int offset = 1;
 
@@ -147,9 +149,14 @@ void frame_buff_task(void *pvParameters)
 
     turn_signal_t signal_state = none_turn_t;
     bool horn = false;
-
+    bool blink_state = false;
+    bool hazard = false;
     int start = 0;
 
+    // Set turning color code 
+    // uint32_t color_code = 0xd6c01a;bea802
+    // uint32_t color_code = 0xc14f00;
+    const uint32_t color_code = 0xc35000;
 
     while(1){
 
@@ -159,6 +166,7 @@ void frame_buff_task(void *pvParameters)
             
             horn = horn_state();
             signal_state = turn_signal_state();
+            hazard = hazard_state();
 
             // for (int i = 0; i < 1; i++) {
             //     for (int j = i; j < (NUM_ROW*NUM_COL); j += 1) {
@@ -176,7 +184,8 @@ void frame_buff_task(void *pvParameters)
 
             for (int i = 0; i < NUM_ROW; i++) {            
                 for (int j = 0; j < NUM_COL; j++) {                
-            
+                    bool pixel_set = false;
+
                     // Build RGB values
                     // hue = 360 + start_rgb + (i*NUM_COL)+j;
                     hue = start_rgb + ((i*NUM_COL)+j)*4;
@@ -197,9 +206,9 @@ void frame_buff_task(void *pvParameters)
                     } 
                     
                     // Turn signal animation
-                    else if( (signal_state==left_turn_t) || (signal_state==right_turn_t) ){        
+                    else if( (signal_state==left_turn_t) || (signal_state==right_turn_t) || ( hazard) ){
 
-                        // for(int k = (-NUM_COL)*box_width ; k<(NUM_COL)*box_width ; k+=2) {
+                        // for(int k = (-NUM_COL)*scroll_box_width ; k<(NUM_COL)*scroll_box_width ; k+=2) {
                         //     if( (back_num_pix+k<=i) && (i<front_num_pix+k) ) {
                         //         // uint32_t color_code = 0xd6c01a;bea802
                         //         // uint32_t color_code = 0xc14f00;
@@ -215,27 +224,52 @@ void frame_buff_task(void *pvParameters)
                         // }
 
                         if( 
-                            (   ((back_num_pix-(8*box_width))<=i)   &&  (i<(front_num_pix-(8*box_width))))  ||
-                            (   ((back_num_pix-(6*box_width))<=i)   &&  (i<(front_num_pix-(6*box_width))))  ||
-                            (   ((back_num_pix-(4*box_width))<=i)   &&  (i<(front_num_pix-(4*box_width))))  ||
-                            (   ((back_num_pix-(2*box_width))<=i)   &&  (i<(front_num_pix-(2*box_width))))  ||
+                           ((   ((back_num_pix-(8*scroll_box_width))<=i)   &&  (i<(front_num_pix-(8*scroll_box_width))))  ||
+                            (   ((back_num_pix-(6*scroll_box_width))<=i)   &&  (i<(front_num_pix-(6*scroll_box_width))))  ||
+                            (   ((back_num_pix-(4*scroll_box_width))<=i)   &&  (i<(front_num_pix-(4*scroll_box_width))))  ||
+                            (   ((back_num_pix-(2*scroll_box_width))<=i)   &&  (i<(front_num_pix-(2*scroll_box_width))))  ||
                             (    (back_num_pix<=i)                  &&  (i<front_num_pix))                  ||
-                            (   ((back_num_pix+(2*box_width))<=i)   &&  (i<(front_num_pix+(2*box_width))))  ||
-                            (   ((back_num_pix+(4*box_width))<=i)   &&  (i<(front_num_pix+(4*box_width))))  ||
-                            (   ((back_num_pix+(6*box_width))<=i)   &&  (i<(front_num_pix+(6*box_width))))  ||
-                            (   ((back_num_pix+(8*box_width))<=i)   &&  (i<(front_num_pix+(8*box_width))))
+                            (   ((back_num_pix+(2*scroll_box_width))<=i)   &&  (i<(front_num_pix+(2*scroll_box_width))))  ||
+                            (   ((back_num_pix+(4*scroll_box_width))<=i)   &&  (i<(front_num_pix+(4*scroll_box_width))))  ||
+                            (   ((back_num_pix+(6*scroll_box_width))<=i)   &&  (i<(front_num_pix+(6*scroll_box_width))))  ||
+                            (   ((back_num_pix+(8*scroll_box_width))<=i)   &&  (i<(front_num_pix+(8*scroll_box_width)))) ) &&
+                            (!hazard)
                         ) {
-                            // uint32_t color_code = 0xd6c01a;bea802
-                            // uint32_t color_code = 0xc14f00;
-                            uint32_t color_code = 0xc35000;
                             // ESP_ERROR_CHECK((frame_buff.strip)->set_pixel(frame_buff.strip, index, (int)(red), (int)(green), (int)(blue)));
                             ESP_ERROR_CHECK((frame_buff.strip)->set_pixel(frame_buff.strip, index, 
                                     (int)(((color_code>>16)&0xFF)/DIV_FACTOR), 
                                     (int)(((color_code>>8)&0xFF)/DIV_FACTOR), 
                                     (int)(((color_code>>0)&0xFF)/DIV_FACTOR)));
+                                    pixel_set = true;
                         }
 
-                        else {
+                        // Left blink
+                        if( (signal_state==left_turn_t) || (hazard) ) {
+                            if( blink_state && 
+                            ( ( (NUM_ROW-blink_box_width-1) <= i ) && ( i < (NUM_ROW) ) ) )
+                            {
+                                ESP_ERROR_CHECK((frame_buff.strip)->set_pixel(frame_buff.strip, index, 
+                                (int)(((color_code>>16)&0xFF)/DIV_FACTOR*4), 
+                                (int)(((color_code>>8)&0xFF)/DIV_FACTOR*4), 
+                                (int)(((color_code>>0)&0xFF)/DIV_FACTOR*4)));
+                                pixel_set = true;
+                            }
+                        } 
+                        
+                        // Right blink
+                        if( (signal_state==right_turn_t) || (hazard) ) {
+                            if( blink_state && 
+                            ( ( (0) <= i ) && ( i < (blink_box_width) ) ) )
+                            {
+                                ESP_ERROR_CHECK((frame_buff.strip)->set_pixel(frame_buff.strip, index, 
+                                (int)(((color_code>>16)&0xFF)/DIV_FACTOR*8), 
+                                (int)(((color_code>>8)&0xFF)/DIV_FACTOR*8), 
+                                (int)(((color_code>>0)&0xFF)/DIV_FACTOR*8)));
+                                pixel_set = true;
+                            }
+                        }
+                        
+                        if(!pixel_set) {
                             ESP_ERROR_CHECK((frame_buff.strip)->set_pixel(frame_buff.strip, index, 0, 0, 0));
                         }
                     } 
@@ -270,7 +304,7 @@ void frame_buff_task(void *pvParameters)
             if(signal_state==left_turn_t){
             
                 if(back_num_pix==NUM_ROW){
-                    front_num_pix = box_width;
+                    front_num_pix = scroll_box_width;
                     back_num_pix = 0;
                 } else {
                     front_num_pix = (front_num_pix+1);
@@ -282,7 +316,7 @@ void frame_buff_task(void *pvParameters)
             
                 if(front_num_pix==0){
                     front_num_pix = NUM_ROW;
-                    back_num_pix = NUM_ROW-box_width;
+                    back_num_pix = NUM_ROW-scroll_box_width;
                 } else {
                     front_num_pix = (front_num_pix-1);
                     back_num_pix = (back_num_pix-1);
@@ -297,14 +331,25 @@ void frame_buff_task(void *pvParameters)
             //     offset = -1;
                 
             //     front_num_pix = NUM_ROW;
-            //     back_num_pix = NUM_ROW-box_width;
+            //     back_num_pix = NUM_ROW-scroll_box_width;
             // }
 
-            // if(front_num_pix-box_width <= 0){
+            // if(front_num_pix-scroll_box_width <= 0){
             //     offset = 1;
-            //     front_num_pix = box_width;
+            //     front_num_pix = scroll_box_width;
             //     back_num_pix = 0;
             // }
+        }
+
+        if(
+            ( ( signal_state==left_turn_t) || (signal_state==right_turn_t) || (hazard) ) && 
+            ( xTaskGetTickCount() - blink_timestamp > pdMS_TO_TICKS(BLINK_BOX_MS) 
+            ) ){
+            blink_timestamp = xTaskGetTickCount();
+            blink_state = !blink_state;
+
+            if(blink_state) ESP_LOGI(TAG,"Turning blink on");
+            else            ESP_LOGI(TAG,"Turning blink off");
         }
 
         vTaskDelay(1);

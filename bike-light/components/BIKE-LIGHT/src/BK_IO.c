@@ -30,6 +30,9 @@ void init_bk_io(void)
 
     gpio_conf.pin_bit_mask = (1ULL << HORN_SIG_PIN);
     gpio_config(&gpio_conf);
+
+    gpio_conf.pin_bit_mask = (1ULL << HAZARD_SIG_PIN);
+    gpio_config(&gpio_conf);
 }
 
 turn_signal_t turn_signal_state(void)
@@ -37,6 +40,11 @@ turn_signal_t turn_signal_state(void)
     if(gpio_get_level(LEFT_SIG_PIN)){ return left_turn_t; }
     else if(gpio_get_level(RIGHT_SIG_PIN)){ return right_turn_t; } 
     else{ return none_turn_t; } 
+}
+
+bool hazard_state(void)
+{
+    return gpio_get_level(HAZARD_SIG_PIN);
 }
 
 bool horn_state(void)
